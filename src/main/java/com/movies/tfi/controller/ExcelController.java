@@ -1,11 +1,15 @@
 package com.movies.tfi.controller;
 
+import com.movies.tfi.payload.ActorDto;
+import com.movies.tfi.payload.MetaData;
+import com.movies.tfi.payload.Response;
+import com.movies.tfi.payload.UploadDto;
 import com.movies.tfi.service.ExcelService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/tfi")
@@ -15,7 +19,15 @@ public class ExcelController {
     ExcelService excelService;
 
     @PostMapping("/uploadActors")
-    public void uploadActors(@RequestParam("filePath") String filePath){
-        excelService.saveActorsFromExcel(filePath);
+    public ResponseEntity<Response<List<ActorDto>>> uploadActors(@RequestBody UploadDto uploadDto){
+        List< ActorDto> actorDtos = excelService.saveActorsFromExcel(uploadDto.getFileName());
+        MetaData metaData = MetaData.builder()
+                .totalItems((long) actorDtos.size())
+                .build();
+        Response response = Response.<List<ActorDto>>builder()
+                .data(actorDtos)
+                .metaData(metaData)
+                .build();
+        return ResponseEntity.ok(response);
     }
 }

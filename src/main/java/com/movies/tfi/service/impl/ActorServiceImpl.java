@@ -92,12 +92,12 @@ public class ActorServiceImpl implements ActorService {
         return actorDtos;
     }
 
-    //private
-    private ActorDto mapToDto(Actor actor){
-        return mapper.map(actor,ActorDto.class);
-    }
-
     private Actor mapToEntity(ActorDto actorDto){
         return new ObjectMapper().convertValue(actorDto, Actor.class);
+    }
+
+    //private
+    public ActorDto mapToDto(Actor actor){
+        return mapper.map(actor,ActorDto.class);
     }
 }
