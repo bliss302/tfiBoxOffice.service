@@ -159,15 +159,15 @@ public class BoxOfficeServiceImpl implements BoxOfficeService {
 //        return mapToDto(updatedBoxOffice);
     }
 
-    //private
-    private BoxOfficeDto mapToDto(BoxOffice boxOffice){
+    public BoxOfficeDto mapToDto(BoxOffice boxOffice){
         return mapper.map(boxOffice,BoxOfficeDto.class);
     }
 
-    private BoxOffice mapToEntity(BoxOfficeDto boxOfficeDto){
+    public BoxOffice mapToEntity(BoxOfficeDto boxOfficeDto){
         return mapper.map(boxOfficeDto, BoxOffice.class);
     }
 
+    //private
     public BigDecimal getValueOrDefault(BigDecimal newValue, BigDecimal currentValue){
         return newValue != null && newValue.compareTo(BigDecimal.ZERO) != 0 ? newValue : currentValue;
     }

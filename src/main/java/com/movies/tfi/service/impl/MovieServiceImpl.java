@@ -3,9 +3,7 @@ package com.movies.tfi.service.impl;
 import com.movies.tfi.entity.Cast;
 import com.movies.tfi.entity.Movie;
 import com.movies.tfi.exception.ResourceNotFoundException;
-import com.movies.tfi.payload.MovieDto;
-import com.movies.tfi.payload.PageDto;
-import com.movies.tfi.payload.SortDto;
+import com.movies.tfi.payload.*;
 import com.movies.tfi.repository.MovieRepository;
 import com.movies.tfi.service.MovieService;
 import com.movies.tfi.utils.CollectionEnums;
@@ -62,6 +60,43 @@ public class MovieServiceImpl implements MovieService{
         List<Movie> movieList = movies.getContent();
         List<MovieDto> movieDtos = movieList.stream().map(movie -> mapToDto(movie)).toList();
         return movieDtos;
+    }
+
+    @Override
+    public Response<List<MovieDto>> getAllMoviesForMoviePage(int pageNo, int pageSize, String sortBy, String sortDir, String search) {
+        Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy).ascending() :
+                Sort.by(sortBy).descending();
+        Pageable pageable = PageRequest.of(pageNo,pageSize,sort);
+
+
+
+        Query searchQuery = getSearchMovieQuery(search);
+        long totalRecords = mongoTemplate.count(searchQuery,Movie.class, CollectionEnums.Collections.MOVIES.toName());
+
+        searchQuery.with(pageable);
+        List<Movie> movieList = mongoTemplate.find(searchQuery,Movie.class, CollectionEnums.Collections.MOVIES.toName());
+
+        List<MovieDto> movieDtos = movieList.stream().map(element -> mapToDto(element)).toList();
+        MetaData metaData = new MetaData();
+        metaData.setTotalItems(totalRecords);
+        metaData.setHasMore((long) (pageNo + 1) * pageSize < totalRecords);
+
+        Response<List<MovieDto>> response = new Response<>().<List<MovieDto>>builder()
+                .data(movieDtos)
+                .metaData(metaData)
+                .build();
+        return response;
+//        Page<Movie> movies;
+//        if(search == null){
+//            movies = movieRepository.findAll(pageable);
+//        }else{
+//            movies = movieRepository.searchMovieUsingTitle(search,pageable);
+//        }
+//
+////        Page<Movie> movies = movieRepository.findAll(pageable);
+//        List<Movie> movieList = movies.getContent();
+//        List<MovieDto> movieDtos = movieList.stream().map(movie -> mapToDto(movie)).toList();
+//        return null;
     }
 
     @Override
@@ -145,7 +180,7 @@ public class MovieServiceImpl implements MovieService{
     }
 
 
-    //private
+
     public MovieDto mapToDto(Movie movie){
         return mapper.map(movie, MovieDto.class);
     }
@@ -153,6 +188,8 @@ public class MovieServiceImpl implements MovieService{
     public Movie mapToEntity(MovieDto movieDto){
         return mapper.map(movieDto,Movie.class);
     }
+
+    //private
 
     public Query getSearchMovieQuery(String searchText){
         Query query = new Query();

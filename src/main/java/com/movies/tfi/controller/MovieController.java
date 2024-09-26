@@ -1,8 +1,9 @@
 package com.movies.tfi.controller;
 
-import com.movies.tfi.payload.MovieDto;
+import com.movies.tfi.payload.*;
 import com.movies.tfi.service.MovieService;
 import com.movies.tfi.utils.AppConstants;
+import com.movies.tfi.utils.RecordsEnums;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -34,6 +35,54 @@ public class MovieController {
         System.out.println("getting all movies...");
         List<MovieDto> movieDtos = movieService.getAllMovies(pageNo,pageSize,sortBy,sortDir,search);
         return movieDtos;
+    }
+
+    @CrossOrigin(origins = "http://localhost:1234")
+    @GetMapping("/search")
+    public ResponseEntity<Response<List<MovieDto>>> getAllMoviesForMoviesPage(
+            @RequestParam(defaultValue = AppConstants.DEFAULT_PAGE_NUMBER, required = false) int pageNo,
+            @RequestParam(defaultValue = AppConstants.DEFAULT_PAGE_SIZE, required = false) int pageSize,
+            @RequestParam(defaultValue = AppConstants.DEFAULT_SORT_BY_ACTOR, required = false) String sortBy,
+            @RequestParam(defaultValue = AppConstants.DEFAULT_SORT_DIR, required = false) String sortDir,
+            @RequestBody SearchDto searchDto
+    ){
+        String type = searchDto.getType();
+        SortDto sort = searchDto.getSort();
+        PageDto page = searchDto.getPage();
+        if(sort == null){
+            sort = SortDto.builder()
+                    .sortBy(AppConstants.RECORDS_MOVIE_SORT_BY)
+                    .sortDir(AppConstants.DEFAULT_SORT_DIR)
+                    .build();
+        }
+        else if(sort.getSortBy() == null)
+        {
+            sort.setSortBy(AppConstants.RECORDS_MOVIE_SORT_BY);
+        }
+        else if(sort.getSortDir() == null)
+        {
+            sort.setSortDir(AppConstants.DEFAULT_SORT_DIR);
+        }
+        String searchStr = searchDto.getSearchStr();
+
+        if(page == null){
+            page = PageDto.builder()
+                    .pageNo(Integer.parseInt(AppConstants.DEFAULT_PAGE_NUMBER))
+                    .size(Integer.parseInt(AppConstants.DEFAULT_PAGE_SIZE))
+                    .build();
+        }
+        System.out.println("getting all movies...");
+        Response<List<MovieDto>> response = movieService.getAllMoviesForMoviePage(pageNo,pageSize,sortBy,sortDir,searchStr);
+//        boolean hasMore =(long) (pageNo + 1) * pageSize < movieDtos.size();
+//        MetaData metaData = MetaData.builder()
+//                .totalItems((long)movieDtos.size())
+//                .hasMore(hasMore)
+//                .build();
+//        Response<List<MovieDto>> response = new Response<>().<List<MovieDto>>builder()
+//                .data(movieDtos)
+//                .metaData(metaData)
+//                .build();
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/{movieId}")

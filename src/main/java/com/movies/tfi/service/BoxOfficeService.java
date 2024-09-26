@@ -1,7 +1,10 @@
 package com.movies.tfi.service;
 
+import com.movies.tfi.entity.BoxOffice;
+import com.movies.tfi.entity.Movie;
 import com.movies.tfi.payload.BoxOfficeDto;
 import com.movies.tfi.payload.GetRecordRequestDto;
+import com.movies.tfi.payload.MovieDto;
 import com.movies.tfi.payload.Response;
 
 import java.util.List;
@@ -15,4 +18,6 @@ public interface BoxOfficeService {
     public BoxOfficeDto updateBoxOfficeById(long boxOfficeId, BoxOfficeDto boxOfficeDto);
     public List<String > getAreas();
     public List<String > getCategories();
+    public BoxOfficeDto mapToDto(BoxOffice boxOffice);
+    public BoxOffice mapToEntity(BoxOfficeDto boxOfficeDto);
 }

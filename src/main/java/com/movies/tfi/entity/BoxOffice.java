@@ -9,10 +9,6 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.math.BigDecimal;
-import java.util.Currency;
-import java.util.List;
-
 @Getter
 @Setter
 @AllArgsConstructor
@@ -43,8 +39,9 @@ public class BoxOffice {
     private Region tamilNadu;
     private Region kerala;
     private Region hindiBelt;
-    private Region Overseas;
-    private Region WorldWideTheatrical;
+    private Region overseas;
+    private Region usa;
+    private Region worldWideTheatrical;
 
 
 }

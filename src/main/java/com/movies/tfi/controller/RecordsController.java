@@ -9,10 +9,7 @@ import com.movies.tfi.utils.RecordsEnums.SearchType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -30,6 +27,7 @@ public class RecordsController {
     @Autowired
     RecordsService recordsService;
 
+    @CrossOrigin(origins = "http://localhost:1234")
     @PostMapping()
     public ResponseEntity<Response<SearchResponse>> searchData(@RequestBody SearchDto searchDto){
 
@@ -78,6 +76,7 @@ public class RecordsController {
         return ResponseEntity.ok(response);
     }
 
+    @CrossOrigin(origins = "http://localhost:1234")
     @PostMapping("/boxOffice")
     public ResponseEntity<Response<List<BoxOfficeDto>>> getBoxOfficeData(@RequestBody GetRecordRequestDto getRecordRequestDto){
         PageDto page = recordsService.getValueOrDefaultPage(getRecordRequestDto.getPage(), DEFAULT_PAGE);
