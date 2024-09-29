@@ -36,4 +36,5 @@ public class Movie {
 //    private long shareCollectionId;
 //    private long grossCollectionId;
     private Cast cast;
+    private String posterPath;
 }

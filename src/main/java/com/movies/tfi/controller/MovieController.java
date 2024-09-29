@@ -5,6 +5,7 @@ import com.movies.tfi.service.MovieService;
 import com.movies.tfi.utils.AppConstants;
 import com.movies.tfi.utils.RecordsEnums;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -38,7 +39,7 @@ public class MovieController {
     }
 
     @CrossOrigin(origins = "http://localhost:1234")
-    @GetMapping("/search")
+    @PostMapping("/search")
     public ResponseEntity<Response<List<MovieDto>>> getAllMoviesForMoviesPage(
             @RequestParam(defaultValue = AppConstants.DEFAULT_PAGE_NUMBER, required = false) int pageNo,
             @RequestParam(defaultValue = AppConstants.DEFAULT_PAGE_SIZE, required = false) int pageSize,
@@ -82,6 +83,8 @@ public class MovieController {
 //                .data(movieDtos)
 //                .metaData(metaData)
 //                .build();
+        response.setMessage(String.format("fetched data for %s successfully","movies page"));
+        response.setStatusCode(HttpStatus.OK.value());
         return ResponseEntity.ok(response);
     }
 

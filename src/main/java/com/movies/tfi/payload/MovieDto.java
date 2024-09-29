@@ -28,4 +28,5 @@ public class MovieDto {
 //    private long shareCollectionId;
 //    private long grossCollectionId;
     private CastDto cast;
+    private String posterPath;
 }

@@ -115,6 +115,17 @@ public class MovieServiceImpl implements MovieService{
     }
 
     @Override
+    public MovieDto getTitleByMovieId(long movieId) {
+        Query query = getProjectionQuery(null);
+        query.addCriteria(Criteria.where(FieldsEnums.MovieFields.MOVIE_ID.toString()).is(movieId));
+        Movie movie = mongoTemplate.findOne(query,Movie.class,CollectionEnums.Collections.MOVIES.toName());
+        if(movie==null) {
+            throw new ResourceNotFoundException("movie","movieId",movieId);
+        }
+        return mapToDto(movie);
+    }
+
+    @Override
     public void deleteMovieByMovieId(long movieId) {
         movieRepository.deleteByMovieId(movieId);
     }
@@ -209,4 +220,5 @@ public class MovieServiceImpl implements MovieService{
         }
         return query;
     }
+
 }
