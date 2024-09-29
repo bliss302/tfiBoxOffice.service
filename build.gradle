@@ -39,7 +39,7 @@ dependencies {
 }
 
 bootJar {
-	archiveFileName = 'tfiApp.jar'
+	archiveFileName = 'tfiApp_deploy.jar'
 }
 
 tasks.named('test') {
