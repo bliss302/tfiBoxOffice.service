@@ -38,6 +38,10 @@ dependencies {
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
 
+bootJar {
+	archiveFileName = 'tfiApp_deploy.jar'
+}
+
 tasks.named('test') {
 	useJUnitPlatform()
 }

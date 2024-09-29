@@ -3,18 +3,16 @@ package com.movies.tfi.payload;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
 
-import java.math.BigDecimal;
-import java.util.Currency;
-
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@JsonInclude(JsonInclude.Include.NON_NULL)
+@JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class BoxOfficeDto {
     private long boxOfficeId;
     private long movieId;
+    private String title;
 //    private String type;
 
     private RegionDto breakEven;
@@ -31,6 +29,7 @@ public class BoxOfficeDto {
     private RegionDto tamilNadu;
     private RegionDto kerala;
     private RegionDto hindiBelt;
-    private RegionDto Overseas;
-    private RegionDto WorldWideTheatrical;
+    private RegionDto overseas;
+    private RegionDto usa;
+    private RegionDto worldWideTheatrical;
 }

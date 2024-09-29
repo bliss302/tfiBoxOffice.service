@@ -21,6 +21,11 @@ public class ActorController {
 
     //controller <--> service <--> repository
 
+    @GetMapping("/test")
+    public String testActor(){
+        return "Connection successful";
+    }
+
     @PostMapping()
     public ResponseEntity<ActorDto> createActor(@RequestBody ActorDto actorDto) throws ParseException {
         System.out.println("creating actor...");
