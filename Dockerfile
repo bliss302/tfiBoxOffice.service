@@ -1,8 +1,16 @@
-FROM ubuntu:latest AS build
-RUN apt-get update
-RUN apt-get install openjdk-17-jdk -y
-COPY . .
-RUN  ./gradlew bootJar --no-daemon
+#FROM ubuntu:latest AS build
+#RUN apt-get update
+#RUN apt-get install openjdk-17-jdk -y
+FROM gradle:8.10.1-jdk17 AS build
+WORKDIR /app
+COPY gradlew .
+COPY gradle gradle
+COPY build.gradle settings.gradle ./
+RUN chmod +x gradlew
+RUN ./gradlew clean dependencies --no-daemon
+COPY src src
+#COPY . .
+RUN ./gradlew clean bootJar --no-daemon
 
 FROM openjdk:17
 WORKDIR /app
