@@ -22,6 +22,7 @@ public interface MovieService {
     public MovieDto updateMovieByMovieId(long movieId, MovieDto movieDto);
     public MovieDto mapToDto(Movie movie);
     public Movie mapToEntity(MovieDto movieDto);
+    public List<MovieDto> loadMoviePoster();
 
 
 }

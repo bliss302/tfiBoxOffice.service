@@ -35,6 +35,7 @@ public class MovieController {
 
         System.out.println("getting all movies...");
         List<MovieDto> movieDtos = movieService.getAllMovies(pageNo,pageSize,sortBy,sortDir,search);
+//        List<MovieDto> movieDtos1 = movieService.loadMoviePoster();
         return movieDtos;
     }
 

@@ -6,6 +6,7 @@ import com.movies.tfi.exception.ResourceNotFoundException;
 import com.movies.tfi.payload.*;
 import com.movies.tfi.repository.MovieRepository;
 import com.movies.tfi.service.MovieService;
+import com.movies.tfi.service.TMDBIService;
 import com.movies.tfi.utils.CollectionEnums;
 import com.movies.tfi.utils.FieldsEnums;
 import org.modelmapper.ModelMapper;
@@ -19,6 +20,7 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -32,6 +34,9 @@ public class MovieServiceImpl implements MovieService{
 
     @Autowired
     private MongoTemplate mongoTemplate;
+
+    @Autowired
+    TMDBIService tmdbiService;
 
     private String searchQuery = "{'title': { $regex: ?0, $options: 'i' }}";
 
@@ -190,6 +195,27 @@ public class MovieServiceImpl implements MovieService{
         return movieDtos;
     }
 
+
+    //get movie poster from TMDBI api and load to db
+    @Override
+    public List<MovieDto> loadMoviePoster() {
+        List<Movie> movies = movieRepository.findAll();
+        List<Movie> updatedMovies = new ArrayList<>();
+        movies.forEach(movie -> {
+            if(movie.getPosterPath()==null || movie.getPosterPath().equals("")){
+                try{
+                    MovieResult movieResult= tmdbiService.getMoviePoster(movie.getTitle());
+                    movie.setPosterPath(movieResult.getPosterPath());
+                    updatedMovies.add(movie);
+                }catch (Exception e){
+                    System.out.println(e.getMessage());
+                }
+            }
+        });
+        List<Movie> movieList= movieRepository.saveAll(updatedMovies);
+        List<MovieDto> movieDtos = movieList.stream().map(ele -> mapToDto(ele)).toList();
+        return movieDtos;
+    }
 
 
     public MovieDto mapToDto(Movie movie){

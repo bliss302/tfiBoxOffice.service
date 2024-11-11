@@ -20,6 +20,7 @@ public class DateDeserializer extends JsonDeserializer<Date> {
         System.out.println("**********************************");
         System.out.println(date);
         System.out.println("**********************************");
+        if(date==null || date.equals("")) return null;
         try {
             return dateFormatter.parse(date);
         } catch (ParseException e) {
