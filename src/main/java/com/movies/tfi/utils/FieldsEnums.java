@@ -55,4 +55,19 @@ public class FieldsEnums {
             return this.field;
         }
     }
+
+    public enum BoxOfficeCategory{
+        GROSS("gross"),
+        SHARE("share"),
+        DAY1("day1");
+
+        private String type;
+        BoxOfficeCategory(String type){
+            this.type = type;
+        }
+
+        public String toString(){
+            return this.type;
+        };
+    }
 }

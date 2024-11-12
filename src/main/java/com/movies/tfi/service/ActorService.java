@@ -1,5 +1,6 @@
 package com.movies.tfi.service;
 
+import com.movies.tfi.entity.Actor;
 import com.movies.tfi.payload.ActorDto;
 
 import java.text.ParseException;
@@ -12,4 +13,5 @@ public interface ActorService {
     public void deleteActorById(long id);
     public ActorDto updateActorById(long id, ActorDto actorDto);
     public List<ActorDto> searchActorByFirstName(String text);
+    public ActorDto mapToDto(Actor actor);
 }

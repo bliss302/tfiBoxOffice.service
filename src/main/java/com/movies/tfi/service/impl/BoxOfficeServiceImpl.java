@@ -3,12 +3,10 @@ package com.movies.tfi.service.impl;
 import com.movies.tfi.entity.BoxOffice;
 import com.movies.tfi.entity.Region;
 import com.movies.tfi.exception.ResourceNotFoundException;
-import com.movies.tfi.payload.BoxOfficeDto;
-import com.movies.tfi.payload.GetRecordRequestDto;
-import com.movies.tfi.payload.MetaData;
-import com.movies.tfi.payload.Response;
+import com.movies.tfi.payload.*;
 import com.movies.tfi.repository.BoxOfficeRepository;
 import com.movies.tfi.service.BoxOfficeService;
+import com.movies.tfi.service.MovieService;
 import com.movies.tfi.utils.CollectionEnums;
 import com.movies.tfi.utils.FieldsEnums;
 import org.modelmapper.ModelMapper;
@@ -33,6 +31,9 @@ public class BoxOfficeServiceImpl implements BoxOfficeService {
 
     @Autowired
     BoxOfficeRepository boxOfficeRepository;
+
+    @Autowired
+    MovieService movieService;
 
     @Autowired
     ModelMapper mapper;
@@ -83,8 +84,6 @@ public class BoxOfficeServiceImpl implements BoxOfficeService {
         Pageable pageable = PageRequest.of(pageNo,pageSize,sort);
         Query query = getProjectionQuery(getRecordRequestDto.getMovieId(),getRecordRequestDto.getRegions(),getRecordRequestDto.getCategory());
 
-
-
         MetaData metaData = new MetaData();
         long totalRecords = mongoTemplate.count(query,BoxOffice.class, CollectionEnums.Collections.BOX_OFFICE.toName());
 
@@ -96,7 +95,14 @@ public class BoxOfficeServiceImpl implements BoxOfficeService {
         metaData.setHasMore((long) (pageNo + 1) * pageSize < totalRecords);
 
         List<BoxOfficeDto> boxOfficeDtoList = boxOffice.stream().map(this::mapToDto).toList();
+        boxOfficeDtoList.stream()
+                .map(ele -> {
 
+                    MovieDto movieDto = movieService.getTitleByMovieId(ele.getMovieId());
+                    ele.setTitle(movieDto.getTitle());
+                    return ele;
+                })
+                .toList();
         Response<List<BoxOfficeDto>> response = Response.<List<BoxOfficeDto>>builder()
                 .data(boxOfficeDtoList)
                 .metaData(metaData)
@@ -159,15 +165,15 @@ public class BoxOfficeServiceImpl implements BoxOfficeService {
 //        return mapToDto(updatedBoxOffice);
     }
 
-    //private
-    private BoxOfficeDto mapToDto(BoxOffice boxOffice){
+    public BoxOfficeDto mapToDto(BoxOffice boxOffice){
         return mapper.map(boxOffice,BoxOfficeDto.class);
     }
 
-    private BoxOffice mapToEntity(BoxOfficeDto boxOfficeDto){
+    public BoxOffice mapToEntity(BoxOfficeDto boxOfficeDto){
         return mapper.map(boxOfficeDto, BoxOffice.class);
     }
 
+    //private
     public BigDecimal getValueOrDefault(BigDecimal newValue, BigDecimal currentValue){
         return newValue != null && newValue.compareTo(BigDecimal.ZERO) != 0 ? newValue : currentValue;
     }
