@@ -18,7 +18,8 @@ import static com.movies.tfi.utils.AppConstants.*;
 
 @RestController
 @RequestMapping("tfi/records")
-@CrossOrigin(origins = "http://localhost:1234")
+@CrossOrigin(allowedHeaders = "*",origins = "*")
+//@CrossOrigin(origins = "http://localhost:1234")
 public class RecordsController {
     @Autowired
     MovieService movieService;
@@ -29,7 +30,7 @@ public class RecordsController {
     @Autowired
     RecordsService recordsService;
 
-//    @CrossOrigin()
+    @CrossOrigin
     @PostMapping()
     public ResponseEntity<Response<SearchResponse>> searchData(@RequestBody SearchDto searchDto){
         String type = searchDto.getType();
@@ -62,7 +63,7 @@ public class RecordsController {
         return ResponseEntity.ok(response);
     }
 
-//    @CrossOrigin(origins = "http://localhost:1234")
+    @CrossOrigin
     @PostMapping("/boxOffice")
     public ResponseEntity<Response<List<BoxOfficeDto>>> getBoxOfficeData(@RequestBody GetRecordRequestDto getRecordRequestDto){
         PageDto page = recordsService.getValueOrDefaultPage(getRecordRequestDto.getPage(), DEFAULT_PAGE);
